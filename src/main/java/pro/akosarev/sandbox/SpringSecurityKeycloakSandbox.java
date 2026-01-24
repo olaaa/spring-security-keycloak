@@ -27,9 +27,13 @@ public class SpringSecurityKeycloakSandbox {
         SpringApplication.run(SpringSecurityKeycloakSandbox.class, args);
     }
 
+    /**
+     * Цепочка фильров безопасности
+     * */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+//        теперь с oauth2Login
         http.oauth2Login(Customizer.withDefaults());
 
         return http
@@ -42,16 +46,22 @@ public class SpringSecurityKeycloakSandbox {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var converter = new JwtAuthenticationConverter();
+        // стандартное поведение -- получение прав из клейма scope
         var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+
+        // устанавливаем имя принципала
         converter.setPrincipalClaimName("preferred_username");
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+//            var roles = (List<String>) jwt.getClaimAsMap("realm_access").get("roles");
             var roles = jwt.getClaimAsStringList("spring_sec_roles");
 
             return Stream.concat(authorities.stream(),
                             roles.stream()
+                                    // откидываем стандартные для киклоак роли
                                     .filter(role -> role.startsWith("ROLE_"))
                                     .map(SimpleGrantedAuthority::new)
+//            (SimpleGrantedAuthority a) -> (GrantedAuthority) a
                                     .map(GrantedAuthority.class::cast))
                     .toList();
         });
@@ -59,10 +69,20 @@ public class SpringSecurityKeycloakSandbox {
         return converter;
     }
 
+    /**
+     * Настраивает пользовательский {@link OAuth2UserService} для обработки {@link OidcUserRequest} и возврата {@link OidcUser}.
+     * {@link OidcUserRequest} описывает запрос к провайдеру (киклоак в нашм случае)
+     * {@link OidcUser} представляет пользователя, полученного от провайдера
+     * Этот сервис расширяет стандартный {@link OidcUserService}, дополняя полномочия (authorities) пользователя ролями,
+     * полученными из клейма "spring_sec_roles", предоставляемого провайдером удостоверений.
+     *
+     * @return экземпляр {@link OAuth2UserService}, который сочетает стандартную обработку OIDC-пользователя
+     *         с добавлением полномочий на основе ролей
+     */
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oAuth2UserService() {
         var oidcUserService = new OidcUserService();
-        return userRequest -> {
+        return (OidcUserRequest userRequest) -> {
             var oidcUser = oidcUserService.loadUser(userRequest);
             var roles = oidcUser.getClaimAsStringList("spring_sec_roles");
             var authorities = Stream.concat(oidcUser.getAuthorities().stream(),

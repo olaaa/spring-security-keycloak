@@ -1,0 +1,58 @@
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpYk1HQlphazFQVlI2c0VsYVpuV3lxWjltMDdXTXkxbThaVDFqc2k1NzlNIn0.eyJleHAiOjE3NjkyMDc5MjksImlhdCI6MTc2OTIwNzYyOSwianRpIjoib25ydHJvOmZjNWFlZTI5LWQ4NTAtZmUyMC02NjVmLWIzY2E2NmQxY2M2NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9yZWFsbXMvZXNlbHBvIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjA1MDE5MmMzLWIzYzQtNDc3Ny04OGYxLWUwYjIwZWM1MzQ1YyIsInR5cCI6IkJlYXJlciIsImF6cCI6InNwcmluZ3NlY3VyaXR5Iiwic2lkIjoiQl9IOU40VnhDYVY1aE1yY2s2eW1xWkxtIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODEiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLWVzZWxwbyJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiSmFjayBEYW5pZWxzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiai5kYW5pZWxzIiwiZ2l2ZW5fbmFtZSI6IkphY2siLCJmYW1pbHlfbmFtZSI6IkRhbmllbHMiLCJlbWFpbCI6ImouZGFuaWVsc0BleGFtcGxlLmNvbSJ9.PT6cExL-_8iPzGihGsteR4-SIjcKBTAYHkSWq-gAlbNLi0SXA__Hj6d8WeqPb7Lt0GKHQoDgFLvxzR0kdZYAwrux2s9b-WpRptwgjIFmq6HPxi1sgABGpkRSfyylrohWClI63DlrJw5Oa6rl1Hl38I2-cR6pJKOcNycZAWiZpJkLni9HbC6gwR8s7iBIKHYD9IW8fMQn0zt-maUdYhGJT0iZ7ewXjylp1kA74H2omCyJbzUnP6_JbISqPdIvQ92WGcDDbNrocRybvdQbqLdNhVXiA82XTHeahCpEWg4aQEXEbWQsf508yVd8Bq7HrCtL_FkxNC1J3sMMh5-Tu1u9qQ",
+  "expires_in": 300,
+  "refresh_expires_in": 1800,
+  "refresh_token": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzZmJmMDE1NS1iNDNlLTQ0MTItOTJmZi03N2IwNGY4OTk1ZmQifQ.eyJleHAiOjE3NjkyMDk0MjksImlhdCI6MTc2OTIwNzYyOSwianRpIjoiZjkyN2E0ZTYtNTljNi03ZDU2LTM5YWQtYjk2NmExZWQyNTY5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9lc2VscG8iLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvcmVhbG1zL2VzZWxwbyIsInN1YiI6IjA1MDE5MmMzLWIzYzQtNDc3Ny04OGYxLWUwYjIwZWM1MzQ1YyIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJzcHJpbmdzZWN1cml0eSIsInNpZCI6IkJfSDlONFZ4Q2FWNWhNcmNrNnltcVpMbSIsInNjb3BlIjoicHJvZmlsZSByb2xlcyBiYXNpYyBlbWFpbCB3ZWItb3JpZ2lucyBhY3IifQ.P4x6Hl8RVHIi7cZLuuRsrcXC2T0XSGskOj3c5tm3p4-1omgdvzOS4qAv99WSlrW247GfG9fEovmOapQRpUdqLA",
+  "token_type": "Bearer",
+  "not-before-policy": 0,
+  "session_state": "B_H9N4VxCaV5hMrck6ymqZLm",
+  "scope": "profile email"
+}
+
+// header
+{
+  "alg": "RS256",
+  "typ": "JWT",
+  "kid": "ibMGBZak1PVR6sElaZnWyqZ9m07WMy1m8ZT1jsi579M"
+}
+
+// payload
+{
+  "exp": 1769207929,
+  "iat": 1769207629,
+  "jti": "onrtro:fc5aee29-d850-fe20-665f-b3ca66d1cc67",
+  "iss": "http://localhost:8080/realms/eselpo",
+  "aud": "account",
+  "sub": "050192c3-b3c4-4777-88f1-e0b20ec5345c",
+  "typ": "Bearer",
+  "azp": "springsecurity",
+  "sid": "B_H9N4VxCaV5hMrck6ymqZLm",
+  "acr": "1",
+  "allowed-origins": [
+    "http://localhost:8081"
+  ],
+  "realm_access": {
+    "roles": [ // роли в рамках рилма
+      "offline_access",
+      "uma_authorization",
+      "default-roles-eselpo"
+    ]
+  },
+//  // роли, назначенные пользователю в рамках конкретного клиента
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "openid profile email",
+  "email_verified": true,
+  "name": "Jack Daniels",
+  "preferred_username": "j.daniels", // свойство, из которого должно доставаться имя пользователя
+  "given_name": "Jack",
+  "family_name": "Daniels",
+  "email": "j.daniels@example.com"
+}

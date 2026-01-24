@@ -1,0 +1,28 @@
+### POST Аутенцифицируем пользователя
+POST  http://localhost:8080/realms/eselpo/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = springsecurity &
+client_secret = XUhZtnkxB6hTsOvN5Pcblxvw2C1wBB8G &
+username = j.daniels &
+password = password &
+grant_type = password
+
+> {%
+
+client.log("status=" + response.status);
+
+ const data = response.body;
+ const token = data["access_token"];
+
+ client.log("access_token=" + token);
+ client.global.set("auth_token", token);
+ %}
+
+### Этот запрос работает только тогда, когда мы определили бин JwtAuthenticationConverter. ROLE_MANAGER
+GET localhost:8081/manager.html
+Authorization: Bearer {{auth_token}}
+
+> {%
+        client.assert(response.status === 200, "Response status is not 200");
+ %}
