@@ -50,6 +50,7 @@ public class SpringSecurityKeycloakSandbox {
                 .build();
     }
 
+//    Этот бин должен настраиваться на стороне сервера ресурсов.
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var converter = new JwtAuthenticationConverter();
@@ -77,8 +78,7 @@ public class SpringSecurityKeycloakSandbox {
     }
 
     /**
-     * Настраивает пользовательский {@link OAuth2UserService} для обработки {@link OidcUserRequest}
-     * и возврата {@link OidcUser}.
+     * Этот бин должен настраиваться на стороне приложения-клиента.
      *
      * <p>Поток выполнения:</p>
      * <ol>
