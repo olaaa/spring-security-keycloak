@@ -91,7 +91,11 @@ public class SpringSecurityKeycloakSandbox {
      *   </li>
      *   <li>HTTP GET http://localhost:8080/realms/eselpo/protocol/openid-connect/certs</li>
      *   <li>После этого выполняется лямбда.</li>
-     *   <li>После выполнения {@code oidcUserService.loadUser(userRequest)} выведется лог.</li>
+     *   <li>После выполнения {@code oidcUserService.loadUser(userRequest)} выведется лог.
+     *   <p>
+     *   {@code "classpath:логи после получения userinfo в лямбде.txt"}
+     *   <p>
+     *   </li>
      *   <li>При повторном вызове HTML не попадаем ни сюда, ни в {@code JwtGrantedAuthoritiesConverter},
      *       потому что создается JSESSIONID.</li>
      *   <li>Даже если делаем в Keycloak sign out, то не попадаем сюда, потому что авторизация происходит JSESSIONID.</li>
@@ -106,7 +110,6 @@ public class SpringSecurityKeycloakSandbox {
      *
      * @return экземпляр {@link OAuth2UserService}, который сочетает стандартную обработку OIDC-пользователя
      *         с добавлением полномочий на основе ролей
-     * @see логи после получения userinfo в лямбде.txt
      */
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oAuth2UserService() {
