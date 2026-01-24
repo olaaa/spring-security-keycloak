@@ -1,5 +1,7 @@
 package pro.akosarev.sandbox;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +18,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Stream;
 
 @SpringBootApplication
 public class SpringSecurityKeycloakSandbox {
+
+    private final Logger logger = LoggerFactory.getLogger(SpringSecurityKeycloakSandbox.class);
 
     public static void main(String[] args) {
         SpringApplication.run(SpringSecurityKeycloakSandbox.class, args);
@@ -29,12 +31,17 @@ public class SpringSecurityKeycloakSandbox {
 
     /**
      * Цепочка фильров безопасности
-     * */
+     *
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            OAuth2UserService<OidcUserRequest, OidcUser> oAuth2UserService
+    ) throws Exception {
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-//        теперь с oauth2Login
-        http.oauth2Login(Customizer.withDefaults());
+        // теперь с oauth2Login
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oAuth2UserService)));
 
         return http
                 .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
@@ -55,7 +62,7 @@ public class SpringSecurityKeycloakSandbox {
             var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
 //            var roles = (List<String>) jwt.getClaimAsMap("realm_access").get("roles");
             var roles = jwt.getClaimAsStringList("spring_sec_roles");
-
+// значения roles: "SCOPE_profile", "SCOPE_email"
             return Stream.concat(authorities.stream(),
                             roles.stream()
                                     // откидываем стандартные для киклоак роли
@@ -70,19 +77,44 @@ public class SpringSecurityKeycloakSandbox {
     }
 
     /**
-     * Настраивает пользовательский {@link OAuth2UserService} для обработки {@link OidcUserRequest} и возврата {@link OidcUser}.
-     * {@link OidcUserRequest} описывает запрос к провайдеру (киклоак в нашм случае)
-     * {@link OidcUser} представляет пользователя, полученного от провайдера
-     * Этот сервис расширяет стандартный {@link OidcUserService}, дополняя полномочия (authorities) пользователя ролями,
-     * полученными из клейма "spring_sec_roles", предоставляемого провайдером удостоверений.
+     * Настраивает пользовательский {@link OAuth2UserService} для обработки {@link OidcUserRequest}
+     * и возврата {@link OidcUser}.
+     *
+     * <p>Поток выполнения:</p>
+     * <ol>
+     *   <li>Пользователь в браузере запрашивает HTML.</li>
+     *   <li>Приложение выполняет редирект:
+     *       http://localhost:8080/realms/eselpo/protocol/openid-connect/auth?response_type=code&client_id=springsecurity&scope=openid&redirect_uri=http://localhost:8081/login/oauth2/code/keycloak
+     *   </li>
+     *   <li>Следом выполняется запрос к провайдеру:
+     *       GET /login/oauth2/code/keycloak?iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Feselpo
+     *   </li>
+     *   <li>HTTP GET http://localhost:8080/realms/eselpo/protocol/openid-connect/certs</li>
+     *   <li>После этого выполняется лямбда.</li>
+     *   <li>После выполнения {@code oidcUserService.loadUser(userRequest)} выведется лог.</li>
+     *   <li>При повторном вызове HTML не попадаем ни сюда, ни в {@code JwtGrantedAuthoritiesConverter},
+     *       потому что создается JSESSIONID.</li>
+     *   <li>Даже если делаем в Keycloak sign out, то не попадаем сюда, потому что авторизация происходит JSESSIONID.</li>
+     * </ol>
+     *
+     * <p>{@link OidcUserRequest} описывает запрос к провайдеру (Keycloak в нашем случае),
+     * {@link OidcUser} представляет пользователя, полученного от провайдера.</p>
+     *
+     * <p>Этот сервис расширяет стандартный {@link OidcUserService}, дополняя полномочия
+     * (authorities) пользователя ролями, полученными из клейма {@code spring_sec_roles},
+     * предоставляемого провайдером удостоверений.</p>
      *
      * @return экземпляр {@link OAuth2UserService}, который сочетает стандартную обработку OIDC-пользователя
      *         с добавлением полномочий на основе ролей
+     * @see логи после получения userinfo в лямбде.txt
      */
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oAuth2UserService() {
+        logger.info("Creating OAuth2UserService..."); // выполняется при инициализации контекста приложения
         var oidcUserService = new OidcUserService();
+        logger.info("OAuth2UserService created.");
         return (OidcUserRequest userRequest) -> {
+            logger.info("Loading user from OIDC provider...");
             var oidcUser = oidcUserService.loadUser(userRequest);
             var roles = oidcUser.getClaimAsStringList("spring_sec_roles");
             var authorities = Stream.concat(oidcUser.getAuthorities().stream(),

@@ -17,6 +17,7 @@ client.log("status=" + response.status);
 
  client.log("access_token=" + token);
  client.global.set("auth_token", token);
+ client.global.set("refresh_token", data["refresh_token"]);
  %}
 
 ### Этот запрос работает только тогда, когда мы определили бин JwtAuthenticationConverter. ROLE_MANAGER
@@ -26,3 +27,6 @@ Authorization: Bearer {{auth_token}}
 > {%
         client.assert(response.status === 200, "Response status is not 200");
  %}
+
+###
+GET http://localhost:8080/admin/realms/eselpo/users?username=j.daniels
