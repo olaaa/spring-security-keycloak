@@ -84,12 +84,12 @@ public class SpringSecurityKeycloakSandbox {
      * <ol>
      *   <li>Пользователь в браузере запрашивает HTML.</li>
      *   <li>Приложение выполняет редирект:
-     *       http://localhost:8080/realms/eselpo/protocol/openid-connect/auth?response_type=code&client_id=springsecurity&scope=openid&redirect_uri=http://localhost:8081/login/oauth2/code/keycloak
+     *       {@linkplain http://localhost:8080/realms/eselpo/protocol/openid-connect/auth?response_type=code&client_id=springsecurity&scope=openid&redirect_uri=http://localhost:8081/login/oauth2/code/keycloak}
      *   </li>
      *   <li>Следом выполняется запрос к провайдеру:
-     *       GET /login/oauth2/code/keycloak?iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Feselpo
+     *       GET {@linkplain /login/oauth2/code/keycloak?iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Feselpo}
      *   </li>
-     *   <li>HTTP GET http://localhost:8080/realms/eselpo/protocol/openid-connect/certs</li>
+     *   <li>HTTP GET {@linkplain http://localhost:8080/realms/eselpo/protocol/openid-connect/certs}</li>
      *   <li>После этого выполняется лямбда.</li>
      *   <li>После выполнения {@code oidcUserService.loadUser(userRequest)} выведется лог.
      *   <p>
