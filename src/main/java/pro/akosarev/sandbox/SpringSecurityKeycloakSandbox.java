@@ -47,7 +47,8 @@ public class SpringSecurityKeycloakSandbox {
         return http
                 .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
                         .requestMatchers("/manager.html").hasRole("MANAGER")
-                        .anyRequest().authenticated())
+                        .anyRequest()
+                        .authenticated())
                 .build();
     }
 
