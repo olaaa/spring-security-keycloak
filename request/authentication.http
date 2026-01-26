@@ -1,4 +1,6 @@
-### POST Аутенцифицируем пользователя
+### POST Аутенцифицируем пользователя.
+# Работает только с включенной галочкой Clients --> springsecurity --> Direct access grants
+# Возвращается JWT токен
 POST  http://localhost:8080/realms/eselpo/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
@@ -19,7 +21,7 @@ client.log("status=" + response.status);
  client.global.set("auth_token", token);
  %}
 
-### Этот запрос работает только тогда, когда мы не определили бин JwtAuthenticationConverter
+###
 GET localhost:8081/authenticated.html
 Authorization: Bearer {{auth_token}}
 
@@ -27,7 +29,7 @@ Authorization: Bearer {{auth_token}}
         client.assert(response.status === 200, "Response status is not 200");
  %}
 
-### Этот запрос работает только тогда, когда мы не определили бин JwtAuthenticationConverter
+### 403 то того момента, пока мы не определили бин JwtAuthenticationConverter с логикой получения ролей
 GET localhost:8081/manager.html
 Authorization: Bearer {{auth_token}}
 

@@ -38,8 +38,7 @@ public class SpringSecurityKeycloakSandbox {
             HttpSecurity http,
             OAuth2UserService<OidcUserRequest, OidcUser> oAuth2UserService
     ) throws Exception {
-//        не нужно, когда добавляем spring-boot-starter-oauth2-client
-//        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         // теперь с oauth2Login
         http.oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oAuth2UserService)));
@@ -52,35 +51,43 @@ public class SpringSecurityKeycloakSandbox {
                 .build();
     }
 
-//    Этот бин не нужен при определении бина oAuth2UserService и должен настраиваться на стороне сервера ресурсов.
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        var converter = new JwtAuthenticationConverter();
-//        // стандартное поведение -- получение прав из клейма scope
-//        var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//
-//        // устанавливаем имя принципала
-//        converter.setPrincipalClaimName("preferred_username");
-//        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-//            var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
-////            var roles = (List<String>) jwt.getClaimAsMap("realm_access").get("roles");
-//            var roles = jwt.getClaimAsStringList("spring_sec_roles");
-//// значения roles: "SCOPE_profile", "SCOPE_email"
-//            return Stream.concat(authorities.stream(),
-//                            roles.stream()
-//                                    // откидываем стандартные для киклоак роли
-//                                    .filter(role -> role.startsWith("ROLE_"))
-//                                    .map(SimpleGrantedAuthority::new)
-////            (SimpleGrantedAuthority a) -> (GrantedAuthority) a
-//                                    .map(GrantedAuthority.class::cast))
-//                    .toList();
-//        });
-//
-//        return converter;
-//    }
+    /**
+     * •
+     * oauth2ResourceServer(): Используется для защиты API, когда запрос приходит с заголовком
+     * {@code Authorization: Bearer <token>}.
+     * В этом случае сессия (JSESSIONID) не создается, и для каждого запроса проверяется JWT-токен.
+     * Именно здесь используется JwtAuthenticationConverter.
+     */
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        var converter = new JwtAuthenticationConverter();
+        // стандартное поведение -- получение прав из клейма scope
+        var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+
+        // устанавливаем имя принципала
+        converter.setPrincipalClaimName("preferred_username");
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+//            var roles = (List<String>) jwt.getClaimAsMap("realm_access").get("roles");
+            var roles = jwt.getClaimAsStringList("spring_sec_roles");
+// значения roles: "SCOPE_profile", "SCOPE_email"
+            return Stream.concat(authorities.stream(),
+                            roles.stream()
+                                    // откидываем стандартные для киклоак роли
+                                    .filter(role -> role.startsWith("ROLE_"))
+                                    .map(SimpleGrantedAuthority::new)
+//            (SimpleGrantedAuthority a) -> (GrantedAuthority) a
+                                    .map(GrantedAuthority.class::cast))
+                    .toList();
+        });
+
+        return converter;
+    }
 
     /**
      * Этот бин должен настраиваться на стороне приложения-клиента.
+     *
+     * Бин oAuth2UserService отвечает за авторизацию пользователей в браузере (через сессию).
      *
      * <p>Поток выполнения:</p>
      * <ol>
