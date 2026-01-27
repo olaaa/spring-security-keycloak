@@ -1,9 +1,6 @@
 spring:
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/eselpo
       client:
         provider:
           keycloak:
@@ -14,8 +11,9 @@ spring:
             client-id: springsecurity
             client-secret: XUhZtnkxB6hTsOvN5Pcblxvw2C1wBB8G
             scope: openid
+            redirect-uri: http://localhost:8082/login/oauth2/code/keycloak
 server:
-  port: 8081
+  port: 8082
 logging:
   level:
     org.springframework.security: TRACE
