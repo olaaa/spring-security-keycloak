@@ -23,8 +23,10 @@
   "jti": "onrtro:fc5aee29-d850-fe20-665f-b3ca66d1cc67",
   "iss": "http://localhost:8080/realms/eselpo",
   "aud": "account",
+//  subject -- id пользователя
   "sub": "050192c3-b3c4-4777-88f1-e0b20ec5345c",
   "typ": "Bearer",
+//  клиент, которому выдан ключ доступа
   "azp": "springsecurity",
   "sid": "B_H9N4VxCaV5hMrck6ymqZLm",
   "acr": "1",
