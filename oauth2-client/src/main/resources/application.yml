@@ -16,4 +16,10 @@ server:
   port: 8082
 logging:
   level:
-    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+    org.springframework.security.oauth2.client: TRACE
+    org.springframework.security.oauth2.client.endpoint: TRACE
+    org.springframework.web.client: DEBUG
+    org.springframework.http: TRACE
+    org.springframework.security: DEBUG
+    com.nimbusds: DEBUG

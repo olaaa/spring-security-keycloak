@@ -1,9 +1,12 @@
 package pro.akosarev.sandbox;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +22,9 @@ public class ClientApplication {
         SpringApplication.run(ClientApplication.class, args);
     }
 
+    @Autowired
+    private RestClient.Builder restClientBuilder;
+
     @Bean
     public SecurityFilterChain clientSecurityFilterChain(HttpSecurity http) throws Exception {
         http.oauth2Login(oauth2 -> {});
@@ -31,7 +37,7 @@ public class ClientApplication {
     public String callManager(@RegisteredOAuth2AuthorizedClient("keycloak") OAuth2AuthorizedClient client) {
         String token = client.getAccessToken().getTokenValue();
         
-        RestClient restClient = RestClient.builder()
+        RestClient restClient = restClientBuilder
                 .baseUrl("http://localhost:8081")
                 .defaultHeader("Authorization", "Bearer " + token)
                 .build();
