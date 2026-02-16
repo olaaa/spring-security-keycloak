@@ -93,6 +93,7 @@ Accept=[application/json, application/*+json]
 10. HTTP GET http://localhost:8080/realms/eselpo/protocol/openid-connect/userinfo
 11. Changed session id from 1171681A4881245F89E3D8659A79B6FE
 12. Authentication: OAuth2AuthenticationToken
+    ``` 
     ├─ principal
     │  ├─ name: j.daniels
     │  ├─ authorities (principal):
@@ -134,7 +135,8 @@ Accept=[application/json, application/*+json]
     ├─ OIDC_USER
     ├─ SCOPE_email
     ├─ SCOPE_openid
-    └─ SCOPE_profile
+    └─ SCOPE_profile  
+    ```
 13. Redirecting to http://localhost:8082/client/call-manager?continue
 14. RestClient -> GET http://localhost:8081/manager.html
     headers=[Authorization:"<redacted>", Content-Length:"0"]
